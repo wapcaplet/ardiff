@@ -12,6 +12,7 @@ def log_serial(filename, device='/dev/ttyACM0', baud=9600):
     outfile = open(filename, 'w')
     while True:
         line = ser.readline()
+        print(line)
         outfile.write(line)
 
 if __name__ == '__main__':
