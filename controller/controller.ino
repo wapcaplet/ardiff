@@ -41,8 +41,8 @@ boolean pump_on = false;
 
 float tank_max_temp = 140;      // Deg. F; above this, pump is off
 float collector_min_temp = 40;  // Deg. F; below this, pump is off
-float on_threshold = 5;         // Deg. F differential before pump turns on
-float off_threshold = 5;        // Deg. F differential before pump turns off
+float on_threshold = 10;         // Deg. F differential before pump turns on
+float off_threshold = 10;        // Deg. F differential before pump turns off
 
 /*
  * setup() - this function runs once when you turn your Arduino on
@@ -80,23 +80,31 @@ void loop()
   float tank_temp = sensors.getTempF(tank_sensor);
   float collector_temp = sensors.getTempF(collector_sensor);
 
+  if (tank_temp < 0 || collector_temp < 0) {
+    Serial.println("Screwy reading, ignoring");
+  }
+  
   // If tank is hot enough, pump is off
-  if (tank_temp >= tank_max_temp) {
+  else if (tank_temp >= tank_max_temp) {
+    Serial.println("Tank is over max temp, pump off");
     no_pump();
   }
 
   // If collector is cold, pump is off
   else if (collector_temp <= collector_min_temp) {
+    Serial.println("Collector is under min temp, pump off");
     no_pump();
   }
 
   // If collector is significantly hotter thank tank, pump is on
   else if (collector_temp > tank_temp + on_threshold) {
+    Serial.println("Collector is hotter than tank, pump on");
     pump();
   }
 
   // If collector is significantly colder than tank, pump is off
   else if (tank_temp > collector_temp + off_threshold) {
+    Serial.println("Collector is colder than tank, pump off");
     no_pump();
   }
 
@@ -106,6 +114,6 @@ void loop()
 
   print_temps(tank_temp, collector_temp);
 
-  delay(1000);
+  delay(60000);
 }
 
