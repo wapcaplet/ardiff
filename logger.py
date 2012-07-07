@@ -10,7 +10,7 @@ from datetime import datetime
 
 def log_serial(filename, device='/dev/ttyACM0', baud=9600):
     ser = serial.Serial(device, baud)
-    outfile = open(filename, 'w')
+    outfile = open(filename, 'a')
     try:
         while True:
             line = ser.readline()
