@@ -24,7 +24,6 @@ For later:
 
 #include <OneWire.h>
 #include <DallasTemperature.h>
-#include <Time.h>
 
 // Digital pin to use for the 1-wire sensor bus
 #define ONE_WIRE_BUS 3
@@ -42,8 +41,8 @@ boolean pump_on = false;
 
 float tank_max_temp = 140;      // Deg. F; above this, pump is off
 float collector_min_temp = 40;  // Deg. F; below this, pump is off
-float on_threshold = 15;        // Deg. F differential before pump turns on
-float off_threshold = 0;        // Deg. F differential before pump turns off
+float on_threshold = 20;        // Deg. F differential before pump turns on
+float off_threshold = 10;       // Deg. F differential before pump turns off
 int interval = 30000;           // Delay in ms between readings
 
 /*
@@ -68,22 +67,6 @@ void no_pump() {
 }
 
 void print_temps(float tank_temp, float collector_temp) {
-/*
-  time_t t = now();
-  Serial.print(year(t));
-  Serial.print("-");
-  Serial.print(month(t));
-  Serial.print("-");
-  Serial.print(day(t));
-  Serial.print(", ");
-
-  Serial.print(hour(t));
-  Serial.print(":");
-  Serial.print(minute(t));
-  Serial.print(":");
-  Serial.print(second(t));
-  Serial.print(", ");
-*/
   Serial.print(tank_temp);
   Serial.print(", ");
 
@@ -123,7 +106,7 @@ void loop()
   }
 
   // If collector is significantly colder than tank, pump is off
-  else if (tank_temp > collector_temp + off_threshold) {
+  else if (collector_temp < tank_temp + off_threshold) {
     //Serial.println("# Collector is colder than tank, pump off");
     no_pump();
   }
