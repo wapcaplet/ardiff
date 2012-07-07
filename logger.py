@@ -6,6 +6,7 @@
 
 import sys
 import serial
+from datetime import datetime
 
 def log_serial(filename, device='/dev/ttyACM0', baud=9600):
     ser = serial.Serial(device, baud)
@@ -13,8 +14,9 @@ def log_serial(filename, device='/dev/ttyACM0', baud=9600):
     try:
         while True:
             line = ser.readline()
-            print(line)
-            outfile.write(line)
+            now = datetime.now()
+            print("%s, %s" % (now, line))
+            outfile.write("%s, %s" % (now, line))
     except KeyboardInterrupt:
         print("Quitting!")
         outfile.close()
